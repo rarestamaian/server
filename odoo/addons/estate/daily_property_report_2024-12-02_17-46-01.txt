@@ -1,0 +1,402 @@
+Daily Property Report
+==============================
+Property Name: Property 286
+Status: BG-989-BJ
+Offer Deadline: 2
+------------------------------
+Property Name: Property 287
+Status: GB-879-TU
+Offer Deadline: 2
+------------------------------
+Property Name: Property 288
+Status: EY-460-BM
+Offer Deadline: 2
+------------------------------
+Property Name: Property 289
+Status: OE-155-GB
+Offer Deadline: 2
+------------------------------
+Property Name: Property 290
+Status: LX-707-YK
+Offer Deadline: 2
+------------------------------
+Property Name: Property 291
+Status: YF-151-FN
+Offer Deadline: 2
+------------------------------
+Property Name: Property 292
+Status: JR-815-GU
+Offer Deadline: 2
+------------------------------
+Property Name: Property 293
+Status: RD-574-QT
+Offer Deadline: 2
+------------------------------
+Property Name: Property 294
+Status: CG-042-RD
+Offer Deadline: 2
+------------------------------
+Property Name: Property 295
+Status: OR-154-HS
+Offer Deadline: 2
+------------------------------
+Property Name: Property 296
+Status: BU-607-RC
+Offer Deadline: 2
+------------------------------
+Property Name: Property 297
+Status: BQ-783-ZF
+Offer Deadline: 2
+------------------------------
+Property Name: Property 298
+Status: BT-872-IW
+Offer Deadline: 2
+------------------------------
+Property Name: Property 299
+Status: AC-196-BU
+Offer Deadline: 2
+------------------------------
+Property Name: Property 300
+Status: BJ-861-HP
+Offer Deadline: 2
+------------------------------
+Property Name: Property 301
+Status: VX-493-YR
+Offer Deadline: 2
+------------------------------
+Property Name: Property 302
+Status: VA-025-LV
+Offer Deadline: 2
+------------------------------
+Property Name: Property 303
+Status: FM-448-AY
+Offer Deadline: 2
+------------------------------
+Property Name: Property 304
+Status: XW-369-LF
+Offer Deadline: 2
+------------------------------
+Property Name: Property 305
+Status: WR-291-FV
+Offer Deadline: 2
+------------------------------
+Property Name: Property 306
+Status: HK-935-QZ
+Offer Deadline: 2
+------------------------------
+Property Name: Property 307
+Status: WF-516-IQ
+Offer Deadline: 2
+------------------------------
+Property Name: Property 308
+Status: VT-425-SF
+Offer Deadline: 2
+------------------------------
+Property Name: Property 309
+Status: UF-437-UG
+Offer Deadline: 2
+------------------------------
+Property Name: Property 310
+Status: KJ-282-FU
+Offer Deadline: 2
+------------------------------
+Property Name: Property 311
+Status: YY-506-FN
+Offer Deadline: 2
+------------------------------
+Property Name: Property 312
+Status: NX-964-OI
+Offer Deadline: 2
+------------------------------
+Property Name: Property 313
+Status: RG-235-AI
+Offer Deadline: 2
+------------------------------
+Property Name: Property 314
+Status: MO-687-ZF
+Offer Deadline: 2
+------------------------------
+Property Name: Property 315
+Status: GD-623-YV
+Offer Deadline: 2
+------------------------------
+Property Name: Property 316
+Status: JC-859-OD
+Offer Deadline: 2
+------------------------------
+Property Name: Property 317
+Status: YU-812-RC
+Offer Deadline: 2
+------------------------------
+Property Name: Property 318
+Status: HO-966-XP
+Offer Deadline: 2
+------------------------------
+Property Name: Property 319
+Status: NL-397-PN
+Offer Deadline: 2
+------------------------------
+Property Name: Property 320
+Status: DN-790-FW
+Offer Deadline: 2
+------------------------------
+Property Name: Property 321
+Status: RA-923-TH
+Offer Deadline: 2
+------------------------------
+Property Name: Property 322
+Status: HI-297-QL
+Offer Deadline: 2
+------------------------------
+Property Name: Property 323
+Status: AF-402-ZS
+Offer Deadline: 2
+------------------------------
+Property Name: Property 324
+Status: VT-553-EZ
+Offer Deadline: 2
+------------------------------
+Property Name: Property 325
+Status: GA-648-RI
+Offer Deadline: 2
+------------------------------
+Property Name: Property 326
+Status: AU-247-ED
+Offer Deadline: 2
+------------------------------
+Property Name: Property 327
+Status: AE-801-VB
+Offer Deadline: 2
+------------------------------
+Property Name: Property 328
+Status: RG-917-XX
+Offer Deadline: 2
+------------------------------
+Property Name: Property 329
+Status: DS-021-EQ
+Offer Deadline: 2
+------------------------------
+Property Name: Property 330
+Status: RF-809-PN
+Offer Deadline: 2
+------------------------------
+Property Name: Property 331
+Status: HE-270-SE
+Offer Deadline: 2
+------------------------------
+Property Name: Property 332
+Status: SU-752-KY
+Offer Deadline: 2
+------------------------------
+Property Name: Property 333
+Status: ZT-757-BD
+Offer Deadline: 2
+------------------------------
+Property Name: Property 334
+Status: SE-409-DU
+Offer Deadline: 2
+------------------------------
+Property Name: Property 335
+Status: ZZ-278-TR
+Offer Deadline: 2
+------------------------------
+Property Name: Property 336
+Status: GE-165-UG
+Offer Deadline: 2
+------------------------------
+Property Name: Property 337
+Status: YZ-662-QT
+Offer Deadline: 2
+------------------------------
+Property Name: Property 338
+Status: CA-589-TX
+Offer Deadline: 2
+------------------------------
+Property Name: Property 339
+Status: IR-760-MW
+Offer Deadline: 2
+------------------------------
+Property Name: Property 340
+Status: GJ-639-JF
+Offer Deadline: 2
+------------------------------
+Property Name: Property 341
+Status: NO-346-NC
+Offer Deadline: 2
+------------------------------
+Property Name: Property 342
+Status: JW-108-JQ
+Offer Deadline: 2
+------------------------------
+Property Name: Property 343
+Status: QF-812-FI
+Offer Deadline: 2
+------------------------------
+Property Name: Property 344
+Status: BB-847-JV
+Offer Deadline: 2
+------------------------------
+Property Name: Property 345
+Status: TB-373-VM
+Offer Deadline: 2
+------------------------------
+Property Name: Property 346
+Status: CT-932-DH
+Offer Deadline: 2
+------------------------------
+Property Name: Property 347
+Status: JH-868-HI
+Offer Deadline: 2
+------------------------------
+Property Name: Property 348
+Status: CT-302-MW
+Offer Deadline: 2
+------------------------------
+Property Name: Property 349
+Status: IO-751-RI
+Offer Deadline: 2
+------------------------------
+Property Name: Property 350
+Status: PX-117-TX
+Offer Deadline: 2
+------------------------------
+Property Name: Property 351
+Status: KE-676-QX
+Offer Deadline: 2
+------------------------------
+Property Name: Property 352
+Status: UO-960-KD
+Offer Deadline: 2
+------------------------------
+Property Name: Property 353
+Status: WT-745-EW
+Offer Deadline: 2
+------------------------------
+Property Name: Property 354
+Status: DQ-992-QS
+Offer Deadline: 2
+------------------------------
+Property Name: Property 355
+Status: XU-818-VF
+Offer Deadline: 2
+------------------------------
+Property Name: Property 356
+Status: JX-924-VW
+Offer Deadline: 2
+------------------------------
+Property Name: Property 357
+Status: ZD-005-LW
+Offer Deadline: 2
+------------------------------
+Property Name: Property 358
+Status: YZ-078-JB
+Offer Deadline: 2
+------------------------------
+Property Name: Property 359
+Status: KB-127-XC
+Offer Deadline: 2
+------------------------------
+Property Name: Property 360
+Status: JI-190-PD
+Offer Deadline: 2
+------------------------------
+Property Name: Property 361
+Status: GM-038-RE
+Offer Deadline: 2
+------------------------------
+Property Name: Property 362
+Status: IC-267-LS
+Offer Deadline: 2
+------------------------------
+Property Name: Property 363
+Status: SP-942-XO
+Offer Deadline: 2
+------------------------------
+Property Name: Property 364
+Status: TK-776-YB
+Offer Deadline: 2
+------------------------------
+Property Name: Property 365
+Status: PQ-297-VF
+Offer Deadline: 2
+------------------------------
+Property Name: Property 366
+Status: DF-527-SG
+Offer Deadline: 2
+------------------------------
+Property Name: Property 367
+Status: ET-745-WV
+Offer Deadline: 2
+------------------------------
+Property Name: Property 368
+Status: TX-592-KX
+Offer Deadline: 2
+------------------------------
+Property Name: Property 369
+Status: OV-015-ZC
+Offer Deadline: 2
+------------------------------
+Property Name: Property 370
+Status: TQ-796-EY
+Offer Deadline: 2
+------------------------------
+Property Name: Property 371
+Status: KB-916-PF
+Offer Deadline: 2
+------------------------------
+Property Name: Property 372
+Status: CH-955-JQ
+Offer Deadline: 2
+------------------------------
+Property Name: Property 373
+Status: RX-786-SD
+Offer Deadline: 2
+------------------------------
+Property Name: Property 374
+Status: FB-757-WV
+Offer Deadline: 2
+------------------------------
+Property Name: Property 375
+Status: RG-345-FO
+Offer Deadline: 2
+------------------------------
+Property Name: Property 376
+Status: PO-164-WR
+Offer Deadline: 2
+------------------------------
+Property Name: Property 377
+Status: ST-019-SX
+Offer Deadline: 2
+------------------------------
+Property Name: Property 378
+Status: WJ-800-AA
+Offer Deadline: 2
+------------------------------
+Property Name: Property 379
+Status: TG-287-UC
+Offer Deadline: 2
+------------------------------
+Property Name: Property 380
+Status: LI-592-LE
+Offer Deadline: 2
+------------------------------
+Property Name: Property 381
+Status: HT-047-YT
+Offer Deadline: 2
+------------------------------
+Property Name: Property 382
+Status: WE-023-RX
+Offer Deadline: 2
+------------------------------
+Property Name: Property 383
+Status: SQ-354-PM
+Offer Deadline: 2
+------------------------------
+Property Name: Property 384
+Status: TQ-526-ZW
+Offer Deadline: 2
+------------------------------
+Property Name: Property 385
+Status: BB-675-TX
+Offer Deadline: 2
+------------------------------

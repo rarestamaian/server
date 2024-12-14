@@ -1,0 +1,38 @@
+<odoo>
+     <record id="view_estate_property_type_form" model="ir.ui.view">
+        <field name="name">estate.property.type.form</field>
+        <field name="model">estate.property.type</field>
+        <field name="arch" type="xml">
+             <form string="Type">
+                <sheet>
+                  <div style="margin-bottom: 20px;">
+                     <field name="name" class="oe_inline" style="font-size: 34px; font-weight: bold;" string=""/>
+                     <!-- docs - developer - reference - ui - view arch - list - components - buttons - u need to add the addon name before the action name -->
+                     <button name="estate.action_estate_property_offer" 
+                            type="action" 
+                            string="offer_count" 
+                            class="oe_stat_button"
+                            icon="fa fa-list">
+                        <span class="badge badge-pill badge-primary">
+                           <field name="offer_count"/> Offers
+                        </span>
+                     </button>
+                  </div>
+                     <sheet>
+                        <notebook>
+                           <page string="Properties">
+                                 <field name="property_ids" >
+                                    <list>
+                                       <field name="name" string="Title"/>
+                                       <field name="expected_price" string="Expected Price"/>
+                                       <field name="state" string="Status"/>
+                                    </list>
+                                 </field>
+                           </page>
+                        </notebook>
+                     </sheet>
+                </sheet>
+             </form>
+        </field>
+     </record>
+</odoo>
