@@ -54,7 +54,8 @@ class EstateProperty(models.Model):
         copy=False,
         default='new',
         string="State",
-        help="The state of the property"
+        help="The state of the property",
+        index=True
     )
 
     active = fields.Boolean(
