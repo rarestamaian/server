@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-name="PropertyWidgetTemplate">
+        <div class="property-widget">
+            <div class="property-list"></div>
+            <button type="button" class="btn btn-primary load-more">Load More</button>
+        </div>
+    </t>
+
+    <t t-name="PropertyListTemplate">
+        <ul>
+            <t t-foreach="properties" t-as="property">
+                <li><t t-esc="property.name" /></li>
+            </t>
+        </ul>
+    </t>
+</templates>
