@@ -22,6 +22,7 @@
         'views/estate_menus.xml',
         'views/list_view.xml',
         'views/form_view.xml',
+        'views/kanban_view.xml',
         'views/search_view.xml',
         'views/estate_type_menus.xml',
         'views/offer_list_view.xml',
