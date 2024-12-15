@@ -10,10 +10,8 @@
                 <!-- Add a page tab for properties -->
                 <xpath expr="//notebook" position="inside">
                     <page string="Properties">
-                        <!-- <field name="property_subset_ids" widget="many2many_list" options="{'no_create': True, 'limit': 50}" /> -->
+                        <field name="property_subset_ids" widget="many2many_list" options="{'no_create': True, 'limit': 50}" />
                         <!-- <field name="property_ids" widget="many2many_tags" options="{'no_create': True}" /> -->
-                        <!-- <button name="action_open_user_properties" type="object" string="View Properties" class="btn-primary" /> -->
-                        <field name="property_ids" widget="property_widget" />
                     </page>
                 </xpath>
             </field>

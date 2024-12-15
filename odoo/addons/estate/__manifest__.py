@@ -10,8 +10,6 @@
     'assets': {
         'web.assets_backend': [
             'estate/static/css/custom_styles.css',
-            'estate/static/js/property_widget.js',
-            'estate/static/xml/property_widget_template.xml',
         ],
     },
     # data files always loaded at installation
