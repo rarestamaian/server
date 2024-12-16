@@ -10,6 +10,12 @@
               parent="menu_estate_management"
               sequence="1"
               />
+    
+    <menuitem id="menu_estate_type_settings"
+                  name="Settings"
+                  parent="menu_estate_management"
+                  sequence="2"
+                />
 
     <!-- Second-Level Menu -->
     <menuitem id="menu_estate_properties_records"
@@ -17,5 +23,19 @@
               parent="menu_estate_advertisments"
               action="action_estate_property"
               sequence="10"
+                />
+
+      <menuitem id="menu_estate_property_types_records"
+              name="Property Types"
+              parent="menu_estate_type_settings"
+              action="action_estate_property_type"
+              sequence="1"
+                />
+      
+        <menuitem id="menu_estate_property_tags_records"
+              name="Property Tags"
+              parent="menu_estate_type_settings"
+              action="action_estate_property_tag"
+              sequence="2"
                 />
 </odoo>

@@ -8,10 +8,13 @@ import time
 import logging
 import os
 from datetime import datetime
-
+import redis
+import json
 
 _logger = logging.getLogger(__name__)
 
+# Create a Redis client instance
+redis_client = redis.StrictRedis(host='127.0.0.1', port=6379, db=0)
 
 class EstateProperty(models.Model):
     _name = "estate.property"
@@ -202,6 +205,80 @@ class EstateProperty(models.Model):
                 raise UserError("You cannot delete a property unless its state is 'New' or 'Cancelled'.")
 
 
+    def get_total_estate_count(self):
+        """Fetch the total estate property count, using Redis for caching."""
+        total_count = redis_client.get('estate_property_count')
+
+        if not total_count:
+            # If not found in Redis, fetch from the database
+            # total_count = self.search_count([])
+            total_count = self.env['estate.property'].search_count([
+                ('active', '=', True),
+                ('state', 'in', ['new', 'offer_received'])
+            ])
+            # Store the result in Redis for future use
+            redis_client.setex('estate_property_count', 3600, total_count)  # Cache for 1 hour
+
+        return int(total_count)  # Ensure the result is returned as an integer
+
+
+    # @api.model
+    # def _get_estate_property_count(self):
+
+    #     # Check if the count is stored in Redis
+    #     cached_count = redis_client.get('estate_property_count')
+
+    #     if cached_count:
+    #         # If cached, return the cached value
+    #         return int(cached_count)
+    #     else:
+    #         # Otherwise, calculate the count and store it in Redis
+    #         count = self.env['estate.property'].search_count([
+    #             ('active', '=', True),
+    #             ('state', 'in', ['new', 'offer_received'])
+    #         ])
+    #         redis_client.set('estate_property_count', count)
+    #         return count
+
+    # @api.model
+    # def next_page(self):
+    #     # You can use this method to navigate to the next page and use the cached count
+    #     total_count = self._get_estate_property_count()
+    #     # Perform your pagination logic here
+    #     return {
+    #         'total_count': total_count,
+    #         'message': 'Moving to the next page'
+    #     }
+
+
+    # @api.model
+    # def search_with_cache(self, args, offset=0, limit=None, order=None):
+    #     """Override the search method to cache the results."""
+    #     # Generate a unique key for this search query
+    #     search_key = self._generate_search_key(args, offset, limit, order)
+        
+    #     # Try to fetch data from Redis cache
+    #     cached_result = redis_client.get(search_key)
+    #     if cached_result:
+    #         # If cached result exists, return it as a list of record IDs
+    #         _logger.info("Fetching records from cache")
+    #         return json.loads(cached_result)
+        
+    #     # If no cache, perform the actual search
+    #     records = super(EstateProperty, self).search(args, offset=offset, limit=limit, order=order)
+        
+    #     # Cache the results in Redis
+    #     redis_client.setex(search_key, 3600, json.dumps([record.id for record in records]))  # Cache for 1 hour
+    #     _logger.info("Fetching records from DB and storing in cache")
+        
+    #     return records
+
+
+    # def _generate_search_key(self, args, offset, limit, order):
+    #     """Generate a unique key based on search parameters."""
+    #     key_parts = [str(args), str(offset), str(limit), str(order)]
+    #     return f"estate.property_search:{':'.join(key_parts)}"
+    
     # @api.model
     # def action_insert_properties(self, *args, **kwargs):
     #     start_time = time.time()

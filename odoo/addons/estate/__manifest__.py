@@ -1,7 +1,7 @@
 {
     'name': "Real Estate Module",
     'version': '1.0',
-    'depends': ['base'],
+    'depends': ['base', 'web'],
     'author': "Rares Tamaian",
     'category': 'Category',
     'description': """
@@ -10,6 +10,7 @@
     'assets': {
         'web.assets_backend': [
             'estate/static/css/custom_styles.css',
+            'estate/static/js/custom_pagination.js',
         ],
     },
     # data files always loaded at installation
@@ -24,7 +25,6 @@
         'views/form_view.xml',
         'views/kanban_view.xml',
         'views/search_view.xml',
-        'views/estate_type_menus.xml',
         'views/offer_list_view.xml',
         'views/property_tag_list_view.xml',
         'views/property_tag_form_view.xml',
