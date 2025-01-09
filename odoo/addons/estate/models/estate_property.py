@@ -1,5 +1,6 @@
 from odoo import models, fields, api
-from datetime import date, timedelta
+import datetime
+# from datetime import date, timedelta, datetime
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools.float_utils import float_compare, float_is_zero
 import string
@@ -7,14 +8,15 @@ import random
 import time
 import logging
 import os
-from datetime import datetime
+# from datetime import datetime
 import redis
 import json
+import hashlib
 
 _logger = logging.getLogger(__name__)
 
 # Create a Redis client instance
-redis_client = redis.StrictRedis(host='127.0.0.1', port=6379, db=0)
+redis_client = redis.Redis(host='127.0.0.1', port=6379, db=0)
 
 class EstateProperty(models.Model):
     _name = "estate.property"
@@ -25,7 +27,7 @@ class EstateProperty(models.Model):
     name = fields.Char(required=True, index=True)
     description = fields.Text()
     postcode = fields.Char()
-    date_availability = fields.Date(copy=False, default=lambda self: date.today() + timedelta(days=90))
+    date_availability = fields.Date(copy=False, default=lambda self: datetime.date.today() + datetime.timedelta(days=90))
     expected_price = fields.Float(required=True)
     selling_price = fields.Float(readonly=True, copy=False)
     bedrooms = fields.Integer(default=2)
@@ -222,63 +224,79 @@ class EstateProperty(models.Model):
         return int(total_count)  # Ensure the result is returned as an integer
 
 
-    # @api.model
-    # def _get_estate_property_count(self):
-
-    #     # Check if the count is stored in Redis
-    #     cached_count = redis_client.get('estate_property_count')
-
-    #     if cached_count:
-    #         # If cached, return the cached value
-    #         return int(cached_count)
-    #     else:
-    #         # Otherwise, calculate the count and store it in Redis
-    #         count = self.env['estate.property'].search_count([
-    #             ('active', '=', True),
-    #             ('state', 'in', ['new', 'offer_received'])
-    #         ])
-    #         redis_client.set('estate_property_count', count)
-    #         return count
-
-    # @api.model
-    # def next_page(self):
-    #     # You can use this method to navigate to the next page and use the cached count
-    #     total_count = self._get_estate_property_count()
-    #     # Perform your pagination logic here
-    #     return {
-    #         'total_count': total_count,
-    #         'message': 'Moving to the next page'
-    #     }
+    def serialize_obj(self, obj):
+        """Used to convert date and datetime objects to string"""
+        if isinstance(obj, (datetime.date, datetime.datetime)):
+            return obj.isoformat()  # Convert to ISO 8601 string format
+        raise TypeError(f"Object of type {obj.__class__.__name__} is not serializable")
 
 
-    # @api.model
-    # def search_with_cache(self, args, offset=0, limit=None, order=None):
-    #     """Override the search method to cache the results."""
-    #     # Generate a unique key for this search query
-    #     search_key = self._generate_search_key(args, offset, limit, order)
-        
-    #     # Try to fetch data from Redis cache
-    #     cached_result = redis_client.get(search_key)
-    #     if cached_result:
-    #         # If cached result exists, return it as a list of record IDs
-    #         _logger.info("Fetching records from cache")
-    #         return json.loads(cached_result)
-        
-    #     # If no cache, perform the actual search
-    #     records = super(EstateProperty, self).search(args, offset=offset, limit=limit, order=order)
-        
-    #     # Cache the results in Redis
-    #     redis_client.setex(search_key, 3600, json.dumps([record.id for record in records]))  # Cache for 1 hour
-    #     _logger.info("Fetching records from DB and storing in cache")
-        
-    #     return records
+    def _generate_cache_key(self, model_name, *args, **kwargs):
+        """Generates a unique cache key based on model name, positional arguments, and keyword arguments."""
+        key_data = {"model_name": model_name, "args": [], "kwargs": {}}
+        for arg in args:
+            key_data["args"].append(arg)
+        for k, v in sorted(kwargs.items()):  # Sort to ensure consistent order
+            key_data["kwargs"][k] = v
+        # Use hashlib to create a hash key for the data
+        return "odoo::" + hashlib.md5(json.dumps(key_data, sort_keys=True, default=self.serialize_obj).encode()).hexdigest()
 
 
-    # def _generate_search_key(self, args, offset, limit, order):
-    #     """Generate a unique key based on search parameters."""
-    #     key_parts = [str(args), str(offset), str(limit), str(order)]
-    #     return f"estate.property_search:{':'.join(key_parts)}"
+    @api.model
+    def web_search_read(self, domain, specification, offset=0, limit=None, order=None, count_limit=None):
+        """Override the method from the web module, models.py - used when retrieving the records"""
+        _logger.info("web_search_read called for estate.property")
+        # _logger.info(f"Domain: {domain}, Specification: {specification}, Offset: {offset}, Limit: {limit}, Order: {order}")
+        cache_key = self._generate_cache_key(self._name, domain, specification, offset, limit, order, count_limit)
+        cached_result = redis_client.get(cache_key)
+        if cached_result:
+            _logger.info(f"Cache triggered web_search_read for domain: {domain}, specification: {specification}, offset: {offset}, limit: {limit}, oder: {order}, count_limit: {count_limit}")
+            return json.loads(cached_result)
+        res = super(EstateProperty, self).web_search_read(domain, specification, offset, limit, order, count_limit)
+        redis_client.setex(cache_key, 3600, json.dumps(res, default=self.serialize_obj))
+        # _logger.info(f"res: {res}")
+        _logger.info(f"Cache miss web_search_read for domain: {domain}, specification: {specification}, offset: {offset}, limit: {limit}, oder: {order}, count_limit: {count_limit}")
+        return res
     
+    @api.model
+    def search_count(self, domain,  limit=None):
+        """Override the method from the odoo root, server/odoo/models.py - used when counting the nr of records"""
+        _logger.info("overriden - search_count called for estate.property")
+        cache_key = self._generate_cache_key(self._name, domain)
+        # Check if the result is already cached
+        cached_count = redis_client.get(cache_key)
+        if cached_count:
+            _logger.info(f"Cache hit search_count for domain: {domain}")
+            return int(cached_count)
+        # If not cached, compute the count and cache it
+        count = super(EstateProperty, self).search_count(domain, limit)
+        redis_client.setex(cache_key, 3600, count)  # Cache for 1 hour
+        _logger.info(f"Cache miss search_count for domain: {domain}. Count computed: {count}")
+        return count
+
+
+    def create(self, vals):
+        _logger.info("overriden - create called for estate.property")
+        redis_client.flushdb()
+        return super(EstateProperty, self).create(vals)
+
+
+    def write(self, vals):
+        _logger.info("overriden - write/edit called for estate.property")
+        redis_client.flushdb()
+        return super(EstateProperty, self).write(vals)
+    
+
+    def unlink(self):
+        _logger.info("overriden - unlink called for estate.property")
+        redis_client.flushdb()
+        return super(EstateProperty, self).unlink()
+
+    # def web_save(self, vals, specification: dict[str, dict], next_id=None)-> list[dict]:
+    #     _logger.info("overriden - web_save called for estate.property")
+    #     return super(EstateProperty, self).web_save(vals=vals, specification=specification, next_id=next_id)
+
+
     # @api.model
     # def action_insert_properties(self, *args, **kwargs):
     #     start_time = time.time()

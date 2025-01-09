@@ -10,5 +10,6 @@
             </p>
         </field>
             <field name="context">{'search_default_available_properties_filter': 1}</field>
+    <!-- Odoo will automatically apply a predefined filter named available_properties_filter - defined by u somewhere -->
     </record>
 </odoo>
