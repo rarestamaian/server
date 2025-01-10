@@ -153,41 +153,22 @@ class EstateProperty(models.Model):
     def generate_daily_report(self):
         """Generate and save the daily property report."""
         try:
-            # report_dir = 'C:/Program Files/Odoo 18.0.20241124/server/odoo/addons/estate'
             report_dir = '/opt/odoo/server/odoo/addons/estate'
             if not os.path.exists(report_dir):
                 os.makedirs(report_dir)
 
-            # properties = self.search([], limit=100)
             properties = self.env['estate.property'].sudo().search([('active', '=', False)], limit=100)
             _logger.info(f"Fetched properties: {properties}")
             if not properties:
                 _logger.warning("No properties found to generate the report.")
                 return
 
-            # report_action = self.env.ref('estate.estate_property_report_action')
-            # if not report_action:
-            #     _logger.error("Report action not found.")
-
-            # Render the template
-            # rendered_report = report._render({
-            #     'docs': properties,
-            # })
-
-            # Generate the report using the QWeb template
-            # rendered_report = self.env['ir.actions.report'].sudo()._render_qweb_html(
-            #     report_action.id, properties
-            # )
-            # report_filename = f"daily_property_report_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.html"
             report_filename = f"daily_property_report_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt"
             file_path = os.path.join(report_dir, report_filename)
             if not file_path:
                 _logger.error("File path is not set correctly.")
                 return
             with open(file_path, 'w') as f:
-                # f.write(rendered_report)
-                # f.write(rendered_report[0])
-                # f.write("Hello\n")
                 f.write("Daily Property Report\n")
                 f.write("=" * 30 + "\n")
                 for property in properties:
@@ -205,23 +186,6 @@ class EstateProperty(models.Model):
             if record.state not in ('new', 'cancelled'):
                     # use _ if u need translation: _("You cannot delete a property unless its state is 'New' or 'Cancelled'.")
                 raise UserError("You cannot delete a property unless its state is 'New' or 'Cancelled'.")
-
-
-    def get_total_estate_count(self):
-        """Fetch the total estate property count, using Redis for caching."""
-        total_count = redis_client.get('estate_property_count')
-
-        if not total_count:
-            # If not found in Redis, fetch from the database
-            # total_count = self.search_count([])
-            total_count = self.env['estate.property'].search_count([
-                ('active', '=', True),
-                ('state', 'in', ['new', 'offer_received'])
-            ])
-            # Store the result in Redis for future use
-            redis_client.setex('estate_property_count', 3600, total_count)  # Cache for 1 hour
-
-        return int(total_count)  # Ensure the result is returned as an integer
 
 
     def serialize_obj(self, obj):
@@ -262,23 +226,30 @@ class EstateProperty(models.Model):
     def search_count(self, domain,  limit=None):
         """Override the method from the odoo root, server/odoo/models.py - used when counting the nr of records"""
         _logger.info("overriden - search_count called for estate.property")
-        cache_key = self._generate_cache_key(self._name, domain)
+        cache_key = self._generate_cache_key(self._name, domain, limit) # limit is necessary - it s default to 10k when entering the page but it must change when navigation backward based on the real count number without limit- hash must be different so include all params not just domain
         # Check if the result is already cached
         cached_count = redis_client.get(cache_key)
         if cached_count:
-            _logger.info(f"Cache hit search_count for domain: {domain}")
+            _logger.info(f"Cache hit search_count for domain: {domain} with count: {cached_count}, int cached_count: {int(cached_count)} hash key: {cache_key}")
             return int(cached_count)
         # If not cached, compute the count and cache it
-        count = super(EstateProperty, self).search_count(domain, limit)
+        count = super(EstateProperty, self).search_count(domain, limit=limit)
         redis_client.setex(cache_key, 3600, count)  # Cache for 1 hour
-        _logger.info(f"Cache miss search_count for domain: {domain}. Count computed: {count}")
+        _logger.info(f"Cache miss search_count for domain: {domain}. Count computed: {count}, hash key: {cache_key}, limit:{limit}")
         return count
 
 
     def create(self, vals):
         _logger.info("overriden - create called for estate.property")
+        res = super(EstateProperty, self).create(vals)
+        total_nr = redis_client.get("odoo::12e4c58826ec60be7791dffc924bd223") # this is the hash for property count without filters
+        _logger.info(f"total nr: {total_nr}")
         redis_client.flushdb()
-        return super(EstateProperty, self).create(vals)
+        if total_nr:
+            total_nr = int(total_nr)
+            total_nr += 1
+            redis_client.setex("odoo::12e4c58826ec60be7791dffc924bd223", 3600, total_nr)  # Cache for 1 hour
+        return res
 
 
     def write(self, vals):
@@ -289,12 +260,14 @@ class EstateProperty(models.Model):
 
     def unlink(self):
         _logger.info("overriden - unlink called for estate.property")
+        res = super(EstateProperty, self).unlink()
+        total_nr = redis_client.get("odoo::12e4c58826ec60be7791dffc924bd223") # this is the hash for property count without filters
         redis_client.flushdb()
-        return super(EstateProperty, self).unlink()
-
-    # def web_save(self, vals, specification: dict[str, dict], next_id=None)-> list[dict]:
-    #     _logger.info("overriden - web_save called for estate.property")
-    #     return super(EstateProperty, self).web_save(vals=vals, specification=specification, next_id=next_id)
+        if total_nr:
+            total_nr = int(total_nr)
+            total_nr -= 1
+            redis_client.setex("odoo::12e4c58826ec60be7791dffc924bd223", 3600, total_nr)  # Cache for 1 hour
+        return res  
 
 
     # @api.model
