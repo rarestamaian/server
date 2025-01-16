@@ -12,6 +12,7 @@ import os
 import redis
 import json
 import hashlib
+import base64
 
 _logger = logging.getLogger(__name__)
 
@@ -203,7 +204,7 @@ class EstateProperty(models.Model):
         for k, v in sorted(kwargs.items()):  # Sort to ensure consistent order
             key_data["kwargs"][k] = v
         # Use hashlib to create a hash key for the data
-        return "odoo::" + hashlib.md5(json.dumps(key_data, sort_keys=True, default=self.serialize_obj).encode()).hexdigest()
+        return hashlib.md5(json.dumps(key_data, sort_keys=True, default=self.serialize_obj).encode()).hexdigest()
 
 
     @api.model
@@ -211,7 +212,7 @@ class EstateProperty(models.Model):
         """Override the method from the web module, models.py - used when retrieving the records"""
         _logger.info("web_search_read called for estate.property")
         # _logger.info(f"Domain: {domain}, Specification: {specification}, Offset: {offset}, Limit: {limit}, Order: {order}")
-        cache_key = self._generate_cache_key(self._name, domain, specification, offset, limit, order, count_limit)
+        cache_key = "web_search_read::" + self._generate_cache_key(self._name, domain, specification, offset, limit, order, count_limit)
         cached_result = redis_client.get(cache_key)
         if cached_result:
             _logger.info(f"Cache triggered web_search_read for domain: {domain}, specification: {specification}, offset: {offset}, limit: {limit}, oder: {order}, count_limit: {count_limit}")
@@ -226,7 +227,7 @@ class EstateProperty(models.Model):
     def search_count(self, domain,  limit=None):
         """Override the method from the odoo root, server/odoo/models.py - used when counting the nr of records"""
         _logger.info("overriden - search_count called for estate.property")
-        cache_key = self._generate_cache_key(self._name, domain, limit) # limit is necessary - it s default to 10k when entering the page but it must change when navigation backward based on the real count number without limit- hash must be different so include all params not just domain
+        cache_key = "search_count::" + self._generate_cache_key(self._name, domain, limit) # limit is necessary - it s default to 10k when entering the page but it must change when navigation backward based on the real count number without limit- hash must be different so include all params not just domain
         # Check if the result is already cached
         cached_count = redis_client.get(cache_key)
         if cached_count:
@@ -242,34 +243,79 @@ class EstateProperty(models.Model):
     def create(self, vals):
         _logger.info("overriden - create called for estate.property")
         res = super(EstateProperty, self).create(vals)
-        total_nr = redis_client.get("odoo::12e4c58826ec60be7791dffc924bd223") # this is the hash for property count without filters
+        total_nr = redis_client.get("search_count::12e4c58826ec60be7791dffc924bd223") # this is the hash for property count without filters
         _logger.info(f"total nr: {total_nr}")
-        redis_client.flushdb()
+        # redis_client.flushdb()
+        redis_keys_web_search_read = redis_client.keys("web_search_read*")
+        redis_keys_search_count = redis_client.keys("search_count*")
+        redis_keys = redis_keys_web_search_read + redis_keys_search_count
+        if redis_keys:
+            for key in redis_keys:
+                redis_client.delete(key)
+                _logger.info(f"Deleted Redis key: {key}")
         if total_nr:
             total_nr = int(total_nr)
             total_nr += 1
-            redis_client.setex("odoo::12e4c58826ec60be7791dffc924bd223", 3600, total_nr)  # Cache for 1 hour
+            redis_client.setex("search_count::12e4c58826ec60be7791dffc924bd223", 3600, total_nr)  # Cache for 1 hour
         return res
 
 
     def write(self, vals):
         _logger.info("overriden - write/edit called for estate.property")
-        redis_client.flushdb()
+        # redis_client.flushdb()
+        redis_keys_web_search_read = redis_client.keys("web_search_read*")
+        if redis_keys_web_search_read:
+            for key in redis_keys_web_search_read:
+                redis_client.delete(key)
+                _logger.info(f"Deleted Redis key: {key}")
         return super(EstateProperty, self).write(vals)
     
 
     def unlink(self):
-        _logger.info("overriden - unlink called for estate.property")
-        res = super(EstateProperty, self).unlink()
-        total_nr = redis_client.get("odoo::12e4c58826ec60be7791dffc924bd223") # this is the hash for property count without filters
-        redis_client.flushdb()
-        if total_nr:
-            total_nr = int(total_nr)
-            total_nr -= 1
-            redis_client.setex("odoo::12e4c58826ec60be7791dffc924bd223", 3600, total_nr)  # Cache for 1 hour
+        for record in self:
+            _logger.info("overriden - unlink called for estate.property")
+            _logger.info(f"self: id:{record.id}, name:{record.name}, state:{record.state}")
+            total_nr = redis_client.get("search_count::12e4c58826ec60be7791dffc924bd223") # this is the hash for property count without filters
+            # redis_client.flushdb()
+            redis_keys_web_search_read = redis_client.keys("web_search_read*")
+            _logger.info(f"keys with search read:{redis_keys_web_search_read}")
+            redis_keys_search_count = redis_client.keys("search_count*")
+            _logger.info(f"keys with search count:{redis_keys_search_count}")
+            redis_keys = redis_keys_web_search_read + redis_keys_search_count
+            _logger.info(f"all keys :{redis_keys}")
+            if redis_keys:
+                for key in redis_keys:
+                    redis_client.delete(key)
+                    _logger.info(f"Deleted Redis key: {key}")
+            res = super(EstateProperty, record).unlink()
+            if total_nr:
+                total_nr = int(total_nr)
+                total_nr -= 1
+                redis_client.setex("search_count::12e4c58826ec60be7791dffc924bd223", 3600, total_nr)  # Cache for 1 hour
         return res  
 
+    # def action_generate_property_pdf(self):
+        # Render the PDF template
+        # report_service = self.env.ref('estate_property.property_report_template')._render_qweb_pdf
+        # pdf_content, content_type = report_service(self.id)
 
+        # # Save the PDF as an attachment
+        # attachment = self.env['ir.attachment'].create({
+        #     'name': f'Property_{self.name}.pdf',
+        #     'type': 'binary',
+        #     'datas': base64.b64encode(pdf_content),
+        #     'res_model': 'estate.property',
+        #     'res_id': self.id,
+        #     'mimetype': 'application/pdf'
+        # })
+
+        # return {
+        #     'type': 'ir.actions.act_url',
+        #     'url': f'/web/content/{attachment.id}?download=true',
+        #     'target': 'self',
+        # }
+        # return ''
+        
     # @api.model
     # def action_insert_properties(self, *args, **kwargs):
     #     start_time = time.time()

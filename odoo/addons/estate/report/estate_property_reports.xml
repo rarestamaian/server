@@ -1,6 +1,6 @@
 <odoo>
         <!-- QWeb Template Definition -->
-    <template id="estate_property_report_template">
+    <!-- <template id="estate_property_report_template">
         <t t-call="web.basic_layout">
             <div>
                 <h1>Daily Property Report</h1>
@@ -24,14 +24,27 @@
                 </table>
             </div>
         </t>
-    </template>
+    </template> -->
 
         <!-- Report Action Definition -->
 <!--    report makes the code available to the odoo interface or for programmatic use-->
- <report id="estate_property_report_action" model="estate.property" string="Property Report"
+ <!-- <report id="estate_property_report_action" model="estate.property" string="Property Report"
         report_type="qweb-pdf" name="estate.estate_property_report_template"
         file="estate.estate_property_report_template"
          attachment_use="False"
-    />
+    /> -->
 <!--    vezi daca e ok attatchment_use sa fie fals ca atunci nu salveaza-->
+    <record id="report_action_estate_property" model="ir.actions.report">
+        <field name="name">Estate Property</field>
+        <field name="model">estate.property</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">estate.property_report_template</field>
+        <field name="report_file">estate.estate_property_templates</field>
+        <field name="print_report_name">'Registration Event - %s' % (object.name or 'Attendee').replace('/','')</field>
+        <!-- <field name="paperformat_id" ref="event.paperformat_euro_lowmargin"/> -->
+       
+        <field name="binding_model_id" ref="model_estate_property"/>
+        <field name="binding_type">report</field>
+    </record>
+
 </odoo>

@@ -13,6 +13,9 @@
                 <sheet>
                     <div style="margin-bottom: 20px;">
                         <field name="name" class="oe_inline" style="font-size: 34px; font-weight: bold;" />
+                        <!-- <button name="action_generate_property_pdf" string="Generate PDF" type="object" class="btn-primary"/> -->
+                        <button name="%(report_action_estate_property)d" string="Print Report" type="action" class="btn-primary"/>
+
                     </div>
                     <field name="tag_ids" widget="many2many_tags" options="{'çolor_field': 'color', 'edit_tags': true, 'no_create_edit': True}"/>
                     <group>
