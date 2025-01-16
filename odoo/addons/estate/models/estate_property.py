@@ -294,28 +294,6 @@ class EstateProperty(models.Model):
                 redis_client.setex("search_count::12e4c58826ec60be7791dffc924bd223", 3600, total_nr)  # Cache for 1 hour
         return res  
 
-    # def action_generate_property_pdf(self):
-        # Render the PDF template
-        # report_service = self.env.ref('estate_property.property_report_template')._render_qweb_pdf
-        # pdf_content, content_type = report_service(self.id)
-
-        # # Save the PDF as an attachment
-        # attachment = self.env['ir.attachment'].create({
-        #     'name': f'Property_{self.name}.pdf',
-        #     'type': 'binary',
-        #     'datas': base64.b64encode(pdf_content),
-        #     'res_model': 'estate.property',
-        #     'res_id': self.id,
-        #     'mimetype': 'application/pdf'
-        # })
-
-        # return {
-        #     'type': 'ir.actions.act_url',
-        #     'url': f'/web/content/{attachment.id}?download=true',
-        #     'target': 'self',
-        # }
-        # return ''
-        
     # @api.model
     # def action_insert_properties(self, *args, **kwargs):
     #     start_time = time.time()
